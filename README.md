@@ -33,3 +33,16 @@ If you want a full native build instead of the standard Expo flow:
 npm run android:native
 npm run ios:native
 ```
+
+## Deploy on Vercel
+
+This project deploys as a static Expo web export.
+
+```bash
+npm run build:web
+```
+
+Vercel should use:
+
+- Build command: `npm run build:web`
+- Output directory: `web-dist`

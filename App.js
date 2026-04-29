@@ -685,6 +685,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     paddingVertical: 12,
     paddingHorizontal: 6,
+    outlineWidth: 0,
+    outlineStyle: "none",
   },
   sliderGroup: {
     marginBottom: 18,
@@ -719,6 +721,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "800",
     textAlign: "right",
+    outlineWidth: 0,
+    outlineStyle: "none",
   },
   sliderSuffix: {
     fontSize: 13,

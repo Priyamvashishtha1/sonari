@@ -1,0 +1,12 @@
+node_modules
+.expo
+npm-debug.*
+dist
+web-build
+dist-check
+dist-check-ios
+web-dist
+web-server.log
+web-server-error.log
+repo.git
+.git-test

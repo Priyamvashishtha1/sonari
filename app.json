@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "SonariCalc",
+    "slug": "sonari-calc-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.sonaricalc.app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.sonaricalc.app"
+    }
+  }
+}

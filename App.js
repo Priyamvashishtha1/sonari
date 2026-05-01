@@ -339,7 +339,7 @@ export default function App() {
       "Gold Jewellery Price",
       "--------------------",
       `Gold Rate (24K): ${formatINR(goldRate)}/gm`,
-      `Gold Rate (24K): ${formatINR(result.goldRateForKarat)}/gm`,
+      `Gold Rate (${karat}K): ${formatINR(result.goldRateForKarat)}/gm`,
       `Weight: ${weight} gm | Karat: ${karat}K`,
       `Gold Value: ${formatINR(result.goldValue)}`,
       `Making Charges: ${formatINR(result.makingAmount)}`,

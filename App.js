@@ -455,7 +455,7 @@ export default function App() {
                 placeholder="10"
                 suffix="gm"
                 colors={colors}
-                onChange={(text) => setWeight(number(text, 0))}
+                onChange={(text) => setWeight(parseInt(text))}
               />
             </View>
 

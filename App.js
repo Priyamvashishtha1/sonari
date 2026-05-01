@@ -443,7 +443,7 @@ export default function App() {
               <NumberField
                 label="Gold Rate (24K)"
                 value={goldRate}
-                placeholder="7200"
+                placeholder="15300"
                 prefix="Rs"
                 suffix="/gm"
                 colors={colors}
@@ -455,7 +455,7 @@ export default function App() {
                 placeholder="10"
                 suffix="gm"
                 colors={colors}
-                onChange={(text) => setWeight(clampNumber(text, 0))}
+                onChange={(text) => setWeight(number(text, 0))}
               />
             </View>
 

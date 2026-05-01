@@ -339,6 +339,7 @@ export default function App() {
       "Gold Jewellery Price",
       "--------------------",
       `Gold Rate (24K): ${formatINR(goldRate)}/gm`,
+      `Gold Rate (24K): ${formatINR(result.goldRateForKarat)}/gm`,
       `Weight: ${weight} gm | Karat: ${karat}K`,
       `Gold Value: ${formatINR(result.goldValue)}`,
       `Making Charges: ${formatINR(result.makingAmount)}`,
@@ -456,7 +457,7 @@ export default function App() {
               />
             </View>
 
-            <SliderField
+            <NumberField
               label="Making Charges"
               value={making}
               min={0}
@@ -466,7 +467,7 @@ export default function App() {
               onChange={setMaking}
               colors={colors}
             />
-            <SliderField
+            <NumberField
               label="Discount"
               value={discount}
               min={0}
@@ -476,7 +477,7 @@ export default function App() {
               onChange={setDiscount}
               colors={colors}
             />
-            <SliderField
+            <NumberField
               label="GST"
               value={gst}
               min={0}

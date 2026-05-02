@@ -92,45 +92,45 @@ function formatEditableNumber(value) {
 function palette(dark) {
   return dark
     ? {
-        status: "light",
-        bg: "#0b1220",
-        bgAlt: "#121b2e",
-        surface: "rgba(20, 29, 46, 0.78)",
-        surfaceSoft: "rgba(35, 48, 74, 0.56)",
-        border: "rgba(173, 198, 255, 0.18)",
-        text: "#f5f9ff",
-        muted: "#a6b9d7",
-        accent: "#76a9ff",
-        accentDeep: "#4d76d9",
-        accentSoft: "rgba(118, 169, 255, 0.12)",
-        green: "#4ade80",
-        red: "#f87171",
-        overlay: "rgba(3,8,18,0.64)",
-        shadow: "rgba(4, 10, 24, 0.28)",
-        glow: "rgba(118, 169, 255, 0.24)",
-        hero: "rgba(12, 20, 35, 0.86)",
-        glassLine: "rgba(255,255,255,0.14)",
-      }
+      status: "light",
+      bg: "#0b1220",
+      bgAlt: "#121b2e",
+      surface: "rgba(20, 29, 46, 0.78)",
+      surfaceSoft: "rgba(35, 48, 74, 0.56)",
+      border: "rgba(173, 198, 255, 0.18)",
+      text: "#f5f9ff",
+      muted: "#a6b9d7",
+      accent: "#76a9ff",
+      accentDeep: "#4d76d9",
+      accentSoft: "rgba(118, 169, 255, 0.12)",
+      green: "#4ade80",
+      red: "#f87171",
+      overlay: "rgba(3,8,18,0.64)",
+      shadow: "rgba(4, 10, 24, 0.28)",
+      glow: "rgba(118, 169, 255, 0.24)",
+      hero: "rgba(12, 20, 35, 0.86)",
+      glassLine: "rgba(255,255,255,0.14)",
+    }
     : {
-        status: "dark",
-        bg: "#eef5ff",
-        bgAlt: "#f8fbff",
-        surface: "rgba(255, 255, 255, 0.72)",
-        surfaceSoft: "rgba(246, 250, 255, 0.86)",
-        border: "rgba(122, 156, 214, 0.24)",
-        text: "#142033",
-        muted: "#61728f",
-        accent: "#5b8cff",
-        accentDeep: "#3465d9",
-        accentSoft: "rgba(91, 140, 255, 0.10)",
-        green: "#15803d",
-        red: "#dc2626",
-        overlay: "rgba(20,32,51,0.24)",
-        shadow: "rgba(108, 145, 210, 0.18)",
-        glow: "rgba(91, 140, 255, 0.18)",
-        hero: "rgba(255, 255, 255, 0.78)",
-        glassLine: "rgba(255,255,255,0.54)",
-      };
+      status: "dark",
+      bg: "#eef5ff",
+      bgAlt: "#f8fbff",
+      surface: "rgba(255, 255, 255, 0.72)",
+      surfaceSoft: "rgba(246, 250, 255, 0.86)",
+      border: "rgba(122, 156, 214, 0.24)",
+      text: "#142033",
+      muted: "#61728f",
+      accent: "#5b8cff",
+      accentDeep: "#3465d9",
+      accentSoft: "rgba(91, 140, 255, 0.10)",
+      green: "#15803d",
+      red: "#dc2626",
+      overlay: "rgba(20,32,51,0.24)",
+      shadow: "rgba(108, 145, 210, 0.18)",
+      glow: "rgba(91, 140, 255, 0.18)",
+      hero: "rgba(255, 255, 255, 0.78)",
+      glassLine: "rgba(255,255,255,0.54)",
+    };
 }
 
 function NumberField({ label, value, onChange, prefix, suffix, placeholder, colors }) {
@@ -380,9 +380,9 @@ export default function App() {
               style={stylesWithTheme.headerChip}
             >
               <Menu>
-              <Text style={stylesWithTheme.headerChipText}>
-                {ownerView ? "Owner" : "Customer"}
-              </Text>
+                <Text style={stylesWithTheme.headerChipText}>
+                  {ownerView ? "Owner" : "Customer"}
+                </Text>
             </Pressable>
             <Pressable onPress={() => setShowHistory(true)} style={stylesWithTheme.iconChip}>
               <Text style={stylesWithTheme.iconText}>History</Text>
@@ -390,272 +390,282 @@ export default function App() {
             <Pressable onPress={() => setDark((current) => !current)} style={stylesWithTheme.iconChip}>
               <Text style={stylesWithTheme.iconText}>{dark ? "Light" : "Dark"}</Text>
             </Pressable>
-            </Menu>
+          </Menu>
+        </View>
+      </View>
+
+      <ScrollView
+        contentContainerStyle={stylesWithTheme.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={stylesWithTheme.heroCard}>
+          <View style={stylesWithTheme.heroTop}>
+            <View>
+              <Text style={stylesWithTheme.heroEyebrow}>Future Gold Console</Text>
+              <Text style={stylesWithTheme.heroTitle}>Professional pricing in a clean glass interface.</Text>
+            </View>
+            <View style={stylesWithTheme.heroBadge}>
+              <Text style={stylesWithTheme.heroBadgeText}>{ownerView ? "Owner Mode" : "Customer Mode"}</Text>
+            </View>
+          </View>
+          <View style={stylesWithTheme.heroMetricRow}>
+            <View style={stylesWithTheme.heroMetric}>
+              <Text style={stylesWithTheme.heroMetricLabel}>24K base</Text>
+              <Text style={stylesWithTheme.heroMetricValue}>{formatINR(goldRate)}</Text>
+            </View>
+            <View style={stylesWithTheme.heroMetric}>
+              <Text style={stylesWithTheme.heroMetricLabel}>Live estimate</Text>
+              <Text style={stylesWithTheme.heroMetricValue}>
+                {result ? formatINR(result.finalPrice) : "--"}
+              </Text>
+            </View>
           </View>
         </View>
 
-        <ScrollView
-          contentContainerStyle={stylesWithTheme.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={stylesWithTheme.heroCard}>
-            <View style={stylesWithTheme.heroTop}>
-              <View>
-                <Text style={stylesWithTheme.heroEyebrow}>Future Gold Console</Text>
-                <Text style={stylesWithTheme.heroTitle}>Professional pricing in a clean glass interface.</Text>
-              </View>
-              <View style={stylesWithTheme.heroBadge}>
-                <Text style={stylesWithTheme.heroBadgeText}>{ownerView ? "Owner Mode" : "Customer Mode"}</Text>
-              </View>
-            </View>
-            <View style={stylesWithTheme.heroMetricRow}>
-              <View style={stylesWithTheme.heroMetric}>
-                <Text style={stylesWithTheme.heroMetricLabel}>24K base</Text>
-                <Text style={stylesWithTheme.heroMetricValue}>{formatINR(goldRate)}</Text>
-              </View>
-              <View style={stylesWithTheme.heroMetric}>
-                <Text style={stylesWithTheme.heroMetricLabel}>Live estimate</Text>
-                <Text style={stylesWithTheme.heroMetricValue}>
-                  {result ? formatINR(result.finalPrice) : "--"}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={stylesWithTheme.card}>
-            <View style={stylesWithTheme.cardTitleRow}>
-              <Text style={stylesWithTheme.cardTitle}>Jewellery Details</Text>
-              <View style={stylesWithTheme.karatRow}>
-                {[24, 22, 20, 18].map((option) => (
-                  <Pill
-                    key={option}
-                    label={`${option}K`}
-                    active={karat === option}
-                    onPress={() => setKarat(option)}
-                    activeColor={colors.accent}
-                    colors={colors}
-                  />
-                ))}
-              </View>
-            </View>
-
-            <View style={stylesWithTheme.inputGrid}>
-              <NumberField
-                label="Gold Rate (24K)"
-                value={goldRate}
-                placeholder="15300"
-                prefix="Rs"
-                suffix="/gm"
-                colors={colors}
-                onChange={(text) => setGoldRate(clampNumber(text, 1))}
-              />
-              <NumberField
-                label="Weight"
-                value={weight}
-                placeholder="10"
-                suffix="gm"
-                colors={colors}
-                onChange={(text) => setWeight(parseInt(text))}
-              />
-            </View>
-
-            <NumberField
-              label="Making Charges"
-              value={making}
-              min={0}
-              max={50}
-              step={0.1}
-              suffix="%"
-              onChange={setMaking}
-              colors={colors}
-            />
-            <NumberField
-              label="Discount"
-              value={discount}
-              min={0}
-              max={30}
-              step={0.1}
-              suffix="%"
-              onChange={setDiscount}
-              colors={colors}
-            />
-            <NumberField
-              label="GST"
-              value={gst}
-              min={0}
-              max={18}
-              step={0.1}
-              suffix="%"
-              onChange={setGst}
-              colors={colors}
-            />
-
-            <View style={stylesWithTheme.segmentCard}>
-              <Text style={stylesWithTheme.segmentLabel}>Making charges based on</Text>
-              <View style={stylesWithTheme.segmentRow}>
+        <View style={stylesWithTheme.card}>
+          <View style={stylesWithTheme.cardTitleRow}>
+            <Text style={stylesWithTheme.cardTitle}>Jewellery Details</Text>
+            <View style={stylesWithTheme.karatRow}>
+              {[24, 22, 20, 18].map((option) => (
                 <Pill
-                  label="Gold Value"
-                  active={makingBasis === "goldValue"}
-                  onPress={() => setMakingBasis("goldValue")}
+                  key={option}
+                  label={`${option}K`}
+                  active={karat === option}
+                  onPress={() => setKarat(option)}
                   activeColor={colors.accent}
                   colors={colors}
                 />
-                <Pill
-                  label="24K Price"
-                  active={makingBasis === "24k"}
-                  onPress={() => setMakingBasis("24k")}
-                  activeColor={colors.accent}
-                  colors={colors}
-                />
-              </View>
+              ))}
             </View>
           </View>
 
-          {result ? (
-            <View style={stylesWithTheme.card}>
-              <View style={stylesWithTheme.cardTitleRow}>
-                <Text style={stylesWithTheme.cardTitle}>Price Breakdown</Text>
-                <Text style={stylesWithTheme.rateTag}>
-                  {karat}K @ {formatINR(result.goldRateForKarat)}/gm
-                </Text>
-              </View>
-
-              {ownerView ? (
-                <View>
-                  <BreakdownRow
-                    label="Gold Value"
-                    sub={`${weight}g x ${formatINR(result.goldRateForKarat)}/gm`}
-                    value={result.goldValue}
-                    colors={colors}
-                  />
-                  <BreakdownRow
-                    label="Making Charges"
-                    sub={`${making}% on ${makingBasis === "24k" ? "24K price" : "gold value"}`}
-                    value={result.makingAmount}
-                    colors={colors}
-                  />
-                  <View style={stylesWithTheme.divider} />
-                  <BreakdownRow label="Subtotal" value={result.subtotal} colors={colors} />
-                  {discount > 0 ? (
-                    <BreakdownRow
-                      label={`Discount (${discount}%)`}
-                      value={-result.discountAmount}
-                      color={colors.green}
-                      colors={colors}
-                    />
-                  ) : null}
-                  {discount > 0 ? (
-                    <BreakdownRow label="After Discount" value={result.afterDiscount} colors={colors} />
-                  ) : null}
-                  <BreakdownRow
-                    label={`GST (${gst}%)`}
-                    value={result.gstAmount}
-                    color={colors.red}
-                    colors={colors}
-                  />
-                </View>
-              ) : (
-                <View style={stylesWithTheme.noteCard}>
-                  <Text style={stylesWithTheme.noteText}>
-                    BIS Hallmarked • GST Included • Certified Quality
-                  </Text>
-                </View>
-              )}
-
-              <Animated.View
-                style={[
-                  stylesWithTheme.finalBlock,
-                  {
-                    transform: [{ scale: scaleAnim }],
-                  },
-                ]}
-              >
-                <Text style={stylesWithTheme.finalLabel}>Final Price</Text>
-                <Text style={stylesWithTheme.finalAmount}>{formatINR(result.finalPrice)}</Text>
-              </Animated.View>
-            </View>
-          ) : null}
-
-          <View style={stylesWithTheme.actionRow}>
-            <Pressable style={stylesWithTheme.primaryButton} onPress={saveCalculation}>
-              <Text style={stylesWithTheme.primaryButtonText}>Save</Text>
-            </Pressable>
-            <Pressable style={stylesWithTheme.secondaryButton} onPress={shareCalculation}>
-              <Text style={stylesWithTheme.secondaryButtonText}>Share</Text>
-            </Pressable>
+          <View style={stylesWithTheme.inputGrid}>
+            <NumberField
+              label="Gold Rate (24K)"
+              value={goldRate}
+              placeholder="15300"
+              prefix="Rs"
+              suffix="/gm"
+              colors={colors}
+              onChange={(text) => setGoldRate(clampNumber(text, 1))}
+            />
+            <NumberField
+              label="Weight"
+              value={weight}
+              placeholder="10"
+              suffix="gm"
+              colors={colors}
+              onChange={(text) => {
+                // Allow empty, digits, and a single decimal point
+                if (text === '' || text === '.') {
+                  setWeight('');
+                  return;
+                }
+                const parsed = parseFloat(text);
+                if (!isNaN(parsed)) {
+                  setWeight(parsed);
+                }
+              }}
+            />
           </View>
-        </ScrollView>
+
+          <NumberField
+            label="Making Charges"
+            value={making}
+            min={0}
+            max={50}
+            step={0.1}
+            suffix="%"
+            onChange={setMaking}
+            colors={colors}
+          />
+          <NumberField
+            label="Discount"
+            value={discount}
+            min={0}
+            max={30}
+            step={0.1}
+            suffix="%"
+            onChange={setDiscount}
+            colors={colors}
+          />
+          <NumberField
+            label="GST"
+            value={gst}
+            min={0}
+            max={18}
+            step={0.1}
+            suffix="%"
+            onChange={setGst}
+            colors={colors}
+          />
+
+          <View style={stylesWithTheme.segmentCard}>
+            <Text style={stylesWithTheme.segmentLabel}>Making charges based on</Text>
+            <View style={stylesWithTheme.segmentRow}>
+              <Pill
+                label="Gold Value"
+                active={makingBasis === "goldValue"}
+                onPress={() => setMakingBasis("goldValue")}
+                activeColor={colors.accent}
+                colors={colors}
+              />
+              <Pill
+                label="24K Price"
+                active={makingBasis === "24k"}
+                onPress={() => setMakingBasis("24k")}
+                activeColor={colors.accent}
+                colors={colors}
+              />
+            </View>
+          </View>
+        </View>
 
         {result ? (
-          <View style={stylesWithTheme.stickyBar}>
-            <View>
-              <Text style={stylesWithTheme.stickyMeta}>
-                {karat}K • {weight}g
-              </Text>
-              <Text style={stylesWithTheme.stickySub}>
-                {ownerView ? `Incl. ${gst}% GST` : "Customer view"}
+          <View style={stylesWithTheme.card}>
+            <View style={stylesWithTheme.cardTitleRow}>
+              <Text style={stylesWithTheme.cardTitle}>Price Breakdown</Text>
+              <Text style={stylesWithTheme.rateTag}>
+                {karat}K @ {formatINR(result.goldRateForKarat)}/gm
               </Text>
             </View>
-            <Animated.Text
+
+            {ownerView ? (
+              <View>
+                <BreakdownRow
+                  label="Gold Value"
+                  sub={`${weight}g x ${formatINR(result.goldRateForKarat)}/gm`}
+                  value={result.goldValue}
+                  colors={colors}
+                />
+                <BreakdownRow
+                  label="Making Charges"
+                  sub={`${making}% on ${makingBasis === "24k" ? "24K price" : "gold value"}`}
+                  value={result.makingAmount}
+                  colors={colors}
+                />
+                <View style={stylesWithTheme.divider} />
+                <BreakdownRow label="Subtotal" value={result.subtotal} colors={colors} />
+                {discount > 0 ? (
+                  <BreakdownRow
+                    label={`Discount (${discount}%)`}
+                    value={-result.discountAmount}
+                    color={colors.green}
+                    colors={colors}
+                  />
+                ) : null}
+                {discount > 0 ? (
+                  <BreakdownRow label="After Discount" value={result.afterDiscount} colors={colors} />
+                ) : null}
+                <BreakdownRow
+                  label={`GST (${gst}%)`}
+                  value={result.gstAmount}
+                  color={colors.red}
+                  colors={colors}
+                />
+              </View>
+            ) : (
+              <View style={stylesWithTheme.noteCard}>
+                <Text style={stylesWithTheme.noteText}>
+                  BIS Hallmarked • GST Included • Certified Quality
+                </Text>
+              </View>
+            )}
+
+            <Animated.View
               style={[
-                stylesWithTheme.stickyPrice,
+                stylesWithTheme.finalBlock,
                 {
                   transform: [{ scale: scaleAnim }],
                 },
               ]}
             >
-              {formatINR(result.finalPrice)}
-            </Animated.Text>
+              <Text style={stylesWithTheme.finalLabel}>Final Price</Text>
+              <Text style={stylesWithTheme.finalAmount}>{formatINR(result.finalPrice)}</Text>
+            </Animated.View>
           </View>
         ) : null}
 
-        <Modal visible={showHistory} animationType="slide" transparent onRequestClose={() => setShowHistory(false)}>
-          <View style={stylesWithTheme.modalBackdrop}>
-            <View style={stylesWithTheme.modalCard}>
-              <View style={stylesWithTheme.modalHeader}>
-                <Text style={stylesWithTheme.modalTitle}>Recent Calculations</Text>
-                <Pressable onPress={() => setShowHistory(false)}>
-                  <Text style={stylesWithTheme.modalClose}>Close</Text>
-                </Pressable>
-              </View>
+        <View style={stylesWithTheme.actionRow}>
+          <Pressable style={stylesWithTheme.primaryButton} onPress={saveCalculation}>
+            <Text style={stylesWithTheme.primaryButtonText}>Save</Text>
+          </Pressable>
+          <Pressable style={stylesWithTheme.secondaryButton} onPress={shareCalculation}>
+            <Text style={stylesWithTheme.secondaryButtonText}>Share</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
 
-              {history.length === 0 ? (
-                <Text style={stylesWithTheme.emptyText}>No saved calculations yet.</Text>
-              ) : (
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  {history.map((item) => (
-                    <View key={item.id} style={stylesWithTheme.historyItem}>
-                      <View>
-                        <Text style={stylesWithTheme.historyTitle}>
-                          {item.karat}K • {item.weight}g
-                        </Text>
-                        <Text style={stylesWithTheme.historyTime}>{item.time}</Text>
-                      </View>
-                      <View style={stylesWithTheme.historyRight}>
-                        <Text style={stylesWithTheme.historyPrice}>{formatINR(item.finalPrice)}</Text>
-                        <Pressable
-                          onPress={() =>
-                            setHistory((current) => current.filter((entry) => entry.id !== item.id))
-                          }
-                        >
-                          <Text style={stylesWithTheme.deleteText}>Delete</Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  ))}
-                </ScrollView>
-              )}
-
-              {history.length > 0 ? (
-                <Pressable onPress={() => setHistory([])} style={stylesWithTheme.clearButton}>
-                  <Text style={stylesWithTheme.clearButtonText}>Clear All</Text>
-                </Pressable>
-              ) : null}
-            </View>
+      {result ? (
+        <View style={stylesWithTheme.stickyBar}>
+          <View>
+            <Text style={stylesWithTheme.stickyMeta}>
+              {karat}K • {weight}g
+            </Text>
+            <Text style={stylesWithTheme.stickySub}>
+              {ownerView ? `Incl. ${gst}% GST` : "Customer view"}
+            </Text>
           </View>
-        </Modal>
-      </View>
-    </SafeAreaView>
+          <Animated.Text
+            style={[
+              stylesWithTheme.stickyPrice,
+              {
+                transform: [{ scale: scaleAnim }],
+              },
+            ]}
+          >
+            {formatINR(result.finalPrice)}
+          </Animated.Text>
+        </View>
+      ) : null}
+
+      <Modal visible={showHistory} animationType="slide" transparent onRequestClose={() => setShowHistory(false)}>
+        <View style={stylesWithTheme.modalBackdrop}>
+          <View style={stylesWithTheme.modalCard}>
+            <View style={stylesWithTheme.modalHeader}>
+              <Text style={stylesWithTheme.modalTitle}>Recent Calculations</Text>
+              <Pressable onPress={() => setShowHistory(false)}>
+                <Text style={stylesWithTheme.modalClose}>Close</Text>
+              </Pressable>
+            </View>
+
+            {history.length === 0 ? (
+              <Text style={stylesWithTheme.emptyText}>No saved calculations yet.</Text>
+            ) : (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {history.map((item) => (
+                  <View key={item.id} style={stylesWithTheme.historyItem}>
+                    <View>
+                      <Text style={stylesWithTheme.historyTitle}>
+                        {item.karat}K • {item.weight}g
+                      </Text>
+                      <Text style={stylesWithTheme.historyTime}>{item.time}</Text>
+                    </View>
+                    <View style={stylesWithTheme.historyRight}>
+                      <Text style={stylesWithTheme.historyPrice}>{formatINR(item.finalPrice)}</Text>
+                      <Pressable
+                        onPress={() =>
+                          setHistory((current) => current.filter((entry) => entry.id !== item.id))
+                        }
+                      >
+                        <Text style={stylesWithTheme.deleteText}>Delete</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+
+            {history.length > 0 ? (
+              <Pressable onPress={() => setHistory([])} style={stylesWithTheme.clearButton}>
+                <Text style={stylesWithTheme.clearButtonText}>Clear All</Text>
+              </Pressable>
+            ) : null}
+          </View>
+        </View>
+      </Modal>
+    </View>
+    </SafeAreaView >
   );
 }
 

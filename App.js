@@ -379,9 +379,9 @@ export default function App() {
               onPress={() => setOwnerView((current) => !current)}
               style={stylesWithTheme.headerChip}
             >
-              <Menu>
+  
                 <Text style={stylesWithTheme.headerChipText}>
-                  {ownerView ? "Owner" : "Customer"}
+             {ownerView ? "Owner" : "Customer"}
                 </Text>
             </Pressable>
             <Pressable onPress={() => setShowHistory(true)} style={stylesWithTheme.iconChip}>
@@ -390,7 +390,6 @@ export default function App() {
             <Pressable onPress={() => setDark((current) => !current)} style={stylesWithTheme.iconChip}>
               <Text style={stylesWithTheme.iconText}>{dark ? "Light" : "Dark"}</Text>
             </Pressable>
-          </Menu>
         </View>
       </View>
 

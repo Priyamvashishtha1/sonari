@@ -455,13 +455,12 @@ export default function App() {
               suffix="gm"
               colors={colors}
               onChange={(text) => {
-                // Allow empty, digits, and a single decimal point
-                if (text === '' || text === '.') {
+                if (text === '') {
                   setWeight('');
                   return;
                 }
                 const parsed = parseFloat(text);
-                if (!isNaN(parsed)) {
+                if (!isNaN(parsed) || text === '.') {
                   setWeight(parsed);
                 }
               }}

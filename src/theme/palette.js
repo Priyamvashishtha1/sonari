@@ -1,0 +1,43 @@
+export function palette(dark) {
+  return dark
+    ? {
+        status: "light",
+        bg: "#0b1220",
+        bgAlt: "#121b2e",
+        surface: "rgba(20, 29, 46, 0.78)",
+        surfaceSoft: "rgba(35, 48, 74, 0.56)",
+        border: "rgba(173, 198, 255, 0.18)",
+        text: "#f5f9ff",
+        muted: "#a6b9d7",
+        accent: "#76a9ff",
+        accentDeep: "#4d76d9",
+        accentSoft: "rgba(118, 169, 255, 0.12)",
+        green: "#4ade80",
+        red: "#f87171",
+        overlay: "rgba(3,8,18,0.64)",
+        shadow: "rgba(4, 10, 24, 0.28)",
+        glow: "rgba(118, 169, 255, 0.24)",
+        hero: "rgba(12, 20, 35, 0.86)",
+        glassLine: "rgba(255,255,255,0.14)",
+      }
+    : {
+        status: "dark",
+        bg: "#eef5ff",
+        bgAlt: "#f8fbff",
+        surface: "rgba(255, 255, 255, 0.72)",
+        surfaceSoft: "rgba(246, 250, 255, 0.86)",
+        border: "rgba(122, 156, 214, 0.24)",
+        text: "#142033",
+        muted: "#61728f",
+        accent: "#5b8cff",
+        accentDeep: "#3465d9",
+        accentSoft: "rgba(91, 140, 255, 0.10)",
+        green: "#15803d",
+        red: "#dc2626",
+        overlay: "rgba(20,32,51,0.24)",
+        shadow: "rgba(108, 145, 210, 0.18)",
+        glow: "rgba(91, 140, 255, 0.18)",
+        hero: "rgba(255, 255, 255, 0.78)",
+        glassLine: "rgba(255,255,255,0.54)",
+      };
+}

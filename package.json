@@ -7,7 +7,7 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
+    "web": "set BROWSER=none&& expo start --web --offline --max-workers 1",
     "build:web": "expo export --platform web --output-dir web-dist",
     "android:native": "expo run:android",
     "ios:native": "expo run:ios"

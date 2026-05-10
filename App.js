@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -14,6 +15,7 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { AppHeader } from "./src/components/AppHeader";
 import { HeroSummary } from "./src/components/HeroSummary";
 import { HistoryModal } from "./src/components/HistoryModal";
+import { InterestCalculatorScreen } from "./src/components/InterestCalculatorScreen";
 import { JewelleryForm } from "./src/components/JewelleryForm";
 import { PriceBreakdown } from "./src/components/PriceBreakdown";
 import { createThemedStyles } from "./src/styles/themedStyles";
@@ -45,9 +47,11 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [activeTab, setActiveTab] = useState("gold");
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const previousFinal = useRef(null);
+  const useNativeDriver = Platform.OS !== "web";
 
   const colors = useMemo(() => palette(dark), [dark]);
   const styles = useMemo(() => createThemedStyles(colors), [colors]);
@@ -70,19 +74,19 @@ export default function App() {
         Animated.timing(scaleAnim, {
           toValue: 1.03,
           duration: 180,
-          useNativeDriver: true,
+          useNativeDriver,
         }),
         Animated.spring(scaleAnim, {
           toValue: 1,
           friction: 5,
           tension: 90,
-          useNativeDriver: true,
+          useNativeDriver,
         }),
       ]).start();
 
       previousFinal.current = nextResult.finalPrice;
     }
-  }, [discount, goldRate, gst, karat, making, makingBasis, scaleAnim, weight]);
+  }, [discount, goldRate, gst, karat, making, makingBasis, scaleAnim, useNativeDriver, weight]);
 
   const saveCalculation = () => {
     if (!result) return;
@@ -144,62 +148,68 @@ export default function App() {
       <ExpoStatusBar style={colors.status} />
 
       <View style={styles.root}>
-        <AppHeader
-          dark={dark}
-          ownerView={ownerView}
-          onOpenHistory={() => setShowHistory(true)}
-          onToggleDark={() => setDark((current) => !current)}
-          onToggleOwnerView={() => setOwnerView((current) => !current)}
-          styles={styles}
-        />
+        {activeTab === "gold" ? (
+          <>
+            <AppHeader
+              dark={dark}
+              ownerView={ownerView}
+              onOpenHistory={() => setShowHistory(true)}
+              onToggleDark={() => setDark((current) => !current)}
+              onToggleOwnerView={() => setOwnerView((current) => !current)}
+              styles={styles}
+            />
 
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <HeroSummary goldRate={goldRate} ownerView={ownerView} result={result} styles={styles} />
+            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+              <HeroSummary goldRate={goldRate} ownerView={ownerView} result={result} styles={styles} />
 
-          <JewelleryForm
-            colors={colors}
-            discount={discount}
-            goldRate={goldRate}
-            gst={gst}
-            karat={karat}
-            making={making}
-            makingBasis={makingBasis}
-            setDiscount={setDiscount}
-            setGoldRate={setGoldRate}
-            setGst={setGst}
-            setKarat={setKarat}
-            setMaking={setMaking}
-            setMakingBasis={setMakingBasis}
-            setWeight={setWeight}
-            styles={styles}
-            weight={weight}
-          />
+              <JewelleryForm
+                colors={colors}
+                discount={discount}
+                goldRate={goldRate}
+                gst={gst}
+                karat={karat}
+                making={making}
+                makingBasis={makingBasis}
+                setDiscount={setDiscount}
+                setGoldRate={setGoldRate}
+                setGst={setGst}
+                setKarat={setKarat}
+                setMaking={setMaking}
+                setMakingBasis={setMakingBasis}
+                setWeight={setWeight}
+                styles={styles}
+                weight={weight}
+              />
 
-          <PriceBreakdown
-            colors={colors}
-            discount={discount}
-            gst={gst}
-            karat={karat}
-            making={making}
-            makingBasis={makingBasis}
-            ownerView={ownerView}
-            result={result}
-            scaleAnim={scaleAnim}
-            styles={styles}
-            weight={weight}
-          />
+              <PriceBreakdown
+                colors={colors}
+                discount={discount}
+                gst={gst}
+                karat={karat}
+                making={making}
+                makingBasis={makingBasis}
+                ownerView={ownerView}
+                result={result}
+                scaleAnim={scaleAnim}
+                styles={styles}
+                weight={weight}
+              />
 
-          <View style={styles.actionRow}>
-            <Pressable style={styles.primaryButton} onPress={saveCalculation}>
-              <Text style={styles.primaryButtonText}>Save</Text>
-            </Pressable>
-            <Pressable style={styles.secondaryButton} onPress={shareCalculation}>
-              <Text style={styles.secondaryButtonText}>Share</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
+              <View style={styles.actionRow}>
+                <Pressable style={styles.primaryButton} onPress={saveCalculation}>
+                  <Text style={styles.primaryButtonText}>Save</Text>
+                </Pressable>
+                <Pressable style={styles.secondaryButton} onPress={shareCalculation}>
+                  <Text style={styles.secondaryButtonText}>Share</Text>
+                </Pressable>
+              </View>
+            </ScrollView>
+          </>
+        ) : (
+          <InterestCalculatorScreen colors={colors} styles={styles} />
+        )}
 
-        {result ? (
+        {activeTab === "gold" && result ? (
           <View style={styles.stickyBar}>
             <View>
               <Text style={styles.stickyMeta}>
@@ -221,7 +231,38 @@ export default function App() {
           styles={styles}
           visible={showHistory}
         />
+
+        <View style={styles.bottomNav}>
+          <BottomTab
+            active={activeTab === "gold"}
+            colors={colors}
+            icon="Calc"
+            label="Gold"
+            onPress={() => setActiveTab("gold")}
+            styles={styles}
+          />
+          <BottomTab
+            active={activeTab === "interest"}
+            colors={colors}
+            icon="%"
+            label="Interest"
+            onPress={() => setActiveTab("interest")}
+            styles={styles}
+          />
+        </View>
       </View>
     </SafeAreaView>
+  );
+}
+
+function BottomTab({ active, colors, icon, label, onPress, styles }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[styles.bottomNavItem, { backgroundColor: active ? colors.accentSoft : "transparent" }]}
+    >
+      <Text style={[styles.bottomNavIcon, { color: active ? colors.accent : colors.muted }]}>{icon}</Text>
+      <Text style={[styles.bottomNavText, { color: active ? colors.accent : colors.muted }]}>{label}</Text>
+    </Pressable>
   );
 }

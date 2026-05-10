@@ -189,12 +189,14 @@ export function createThemedStyles(colors) {
     },
     cardTitleRow: {
       flexDirection: "row",
+      flexWrap: "wrap",
       justifyContent: "space-between",
       gap: 12,
       marginBottom: 18,
     },
     cardTitle: {
       flex: 1,
+      minWidth: "100%",
       fontSize: 21,
       fontWeight: "800",
       color: colors.text,
@@ -203,7 +205,8 @@ export function createThemedStyles(colors) {
       flexDirection: "row",
       flexWrap: "wrap",
       gap: 6,
-      justifyContent: "flex-end",
+      justifyContent: "flex-start",
+      width: "100%",
     },
     inputGrid: {
       flexDirection: "row",

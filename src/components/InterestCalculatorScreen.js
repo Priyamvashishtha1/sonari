@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Pressable, ScrollView, Text, TextInput, ToastAndroid, View, Platform } from "react-native";
+import { Animated, Modal, Pressable, ScrollView, Text, TextInput, ToastAndroid, View, Platform } from "react-native";
 
 import { loadLocalValue, saveLocalValue } from "../services/localStore";
 import {
@@ -7,10 +7,12 @@ import {
   formatDateInput,
   getDurationFromDates,
   getDurationFromParts,
+  parseDateInput,
 } from "../utils/interest";
 import { formatINR } from "../utils/price";
 
 const STORE_KEY = "sonari.interest.lastCalculation";
+const MONTH_LABELS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const initialForm = {
   interestType: "simple",
@@ -26,10 +28,19 @@ const initialForm = {
   compoundingFrequency: "monthly",
 };
 
+function getDaysInMonth(year, month) {
+  return new Date(year, month + 1, 0).getDate();
+}
+
 export function InterestCalculatorScreen({ colors, styles }) {
   const [form, setForm] = useState(initialForm);
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+  const [datePicker, setDatePicker] = useState({
+    visible: false,
+    field: "fromDate",
+    draft: { day: 1, month: 0, year: new Date().getFullYear() },
+  });
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -84,6 +95,44 @@ export function InterestCalculatorScreen({ colors, styles }) {
     if (/^[\d/]*$/.test(value) && value.length <= 10) {
       updateForm({ [key]: value });
     }
+  };
+
+  const openDatePicker = (field) => {
+    const parsed = parseDateInput(form[field]) || new Date();
+    setDatePicker({
+      visible: true,
+      field,
+      draft: {
+        day: parsed.getDate(),
+        month: parsed.getMonth(),
+        year: parsed.getFullYear(),
+      },
+    });
+  };
+
+  const closeDatePicker = () => {
+    setDatePicker((current) => ({ ...current, visible: false }));
+  };
+
+  const setDateDraft = (patch) => {
+    setDatePicker((current) => {
+      const nextDraft = { ...current.draft, ...patch };
+      const maxDay = getDaysInMonth(nextDraft.year, nextDraft.month);
+      if (nextDraft.day > maxDay) {
+        nextDraft.day = maxDay;
+      }
+
+      return {
+        ...current,
+        draft: nextDraft,
+      };
+    });
+  };
+
+  const confirmDatePicker = () => {
+    const pickedDate = new Date(datePicker.draft.year, datePicker.draft.month, datePicker.draft.day);
+    updateForm({ [datePicker.field]: formatDateInput(pickedDate) });
+    closeDatePicker();
   };
 
   const calculate = () => {
@@ -212,25 +261,17 @@ export function InterestCalculatorScreen({ colors, styles }) {
 
         {form.durationMode === "dates" ? (
           <View style={styles.inputGrid}>
-            <InputRow
-              colors={colors}
-              inline
-              keyboardType="default"
+            <DateField
               label="From Date"
-              placeholder="dd/MM/yyyy"
+              onPress={() => openDatePicker("fromDate")}
+              styles={styles}
               value={form.fromDate}
-              onChangeText={(value) => handleDateChange("fromDate", value)}
-              styles={styles}
             />
-            <InputRow
-              colors={colors}
-              inline
-              keyboardType="default"
+            <DateField
               label="To Date"
-              placeholder="dd/MM/yyyy"
-              value={form.toDate}
-              onChangeText={(value) => handleDateChange("toDate", value)}
+              onPress={() => openDatePicker("toDate")}
               styles={styles}
+              value={form.toDate}
             />
           </View>
         ) : (
@@ -292,7 +333,97 @@ export function InterestCalculatorScreen({ colors, styles }) {
           />
         </Animated.View>
       ) : null}
+
+      <DatePickerModal
+        draft={datePicker.draft}
+        onCancel={closeDatePicker}
+        onConfirm={confirmDatePicker}
+        onChangeDraft={setDateDraft}
+        styles={styles}
+        visible={datePicker.visible}
+      />
     </ScrollView>
+  );
+}
+
+function DateField({ label, onPress, styles, value }) {
+  return (
+    <Pressable onPress={onPress} style={styles.dateFieldWrap}>
+      <Text style={styles.dateFieldLabel}>{label}</Text>
+      <View style={styles.dateFieldShell}>
+        <Text style={styles.dateFieldValue}>{value}</Text>
+        <Text style={styles.dateFieldIcon}>📅</Text>
+      </View>
+    </Pressable>
+  );
+}
+
+function DatePickerModal({ draft, onCancel, onConfirm, onChangeDraft, styles, visible }) {
+  const maxDay = getDaysInMonth(draft.year, draft.month);
+  const years = [draft.year - 1, draft.year, draft.year + 1];
+  const days = [Math.max(1, draft.day - 1), draft.day, Math.min(maxDay, draft.day + 1)];
+  const months = [MONTH_LABELS[(draft.month + 11) % 12], MONTH_LABELS[draft.month], MONTH_LABELS[(draft.month + 1) % 12]];
+
+  return (
+    <Modal animationType="fade" transparent visible={visible} onRequestClose={onCancel}>
+      <View style={styles.datePickerBackdrop}>
+        <View style={styles.datePickerCard}>
+          <Text style={styles.datePickerTitle}>Select date</Text>
+
+          <View style={styles.datePickerColumns}>
+            <WheelColumn
+              centerValue={months[1]}
+              nextValue={months[2]}
+              prevValue={months[0]}
+              onNext={() => onChangeDraft({ month: (draft.month + 1) % 12, year: draft.month === 11 ? draft.year + 1 : draft.year })}
+              onPrev={() => onChangeDraft({ month: (draft.month + 11) % 12, year: draft.month === 0 ? draft.year - 1 : draft.year })}
+              styles={styles}
+            />
+            <WheelColumn
+              centerValue={String(days[1]).padStart(2, "0")}
+              nextValue={String(days[2]).padStart(2, "0")}
+              prevValue={String(days[0]).padStart(2, "0")}
+              onNext={() => onChangeDraft({ day: draft.day >= maxDay ? 1 : draft.day + 1 })}
+              onPrev={() => onChangeDraft({ day: draft.day <= 1 ? maxDay : draft.day - 1 })}
+              styles={styles}
+            />
+            <WheelColumn
+              centerValue={String(years[1])}
+              nextValue={String(years[2])}
+              prevValue={String(years[0])}
+              onNext={() => onChangeDraft({ year: draft.year + 1 })}
+              onPrev={() => onChangeDraft({ year: draft.year - 1 })}
+              styles={styles}
+            />
+          </View>
+
+          <View style={styles.datePickerActions}>
+            <Pressable onPress={onCancel} style={styles.datePickerButtonGhost}>
+              <Text style={styles.datePickerButtonGhostText}>Cancel</Text>
+            </Pressable>
+            <Pressable onPress={onConfirm} style={styles.datePickerButtonPrimary}>
+              <Text style={styles.datePickerButtonPrimaryText}>Confirm</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+function WheelColumn({ centerValue, nextValue, onNext, onPrev, prevValue, styles }) {
+  return (
+    <View style={styles.dateWheelColumn}>
+      <Pressable onPress={onPrev} style={styles.dateWheelOption}>
+        <Text style={styles.dateWheelTextMuted}>{prevValue}</Text>
+      </Pressable>
+      <View style={styles.dateWheelSelected}>
+        <Text style={styles.dateWheelTextStrong}>{centerValue}</Text>
+      </View>
+      <Pressable onPress={onNext} style={styles.dateWheelOption}>
+        <Text style={styles.dateWheelTextMuted}>{nextValue}</Text>
+      </Pressable>
+    </View>
   );
 }
 

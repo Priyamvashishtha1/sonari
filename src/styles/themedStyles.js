@@ -589,6 +589,41 @@ export function createThemedStyles(colors) {
       gap: 8,
       marginTop: 12,
     },
+    dateFieldWrap: {
+      flex: 1,
+      minWidth: 180,
+      gap: 8,
+      marginTop: 12,
+    },
+    dateFieldLabel: {
+      color: colors.muted,
+      fontSize: 11,
+      letterSpacing: 0.7,
+      textTransform: "uppercase",
+      fontWeight: "600",
+    },
+    dateFieldShell: {
+      width: "100%",
+      minHeight: 52,
+      borderWidth: 1.5,
+      borderRadius: 14,
+      borderColor: colors.border,
+      backgroundColor: colors.bg,
+      paddingHorizontal: 14,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 10,
+    },
+    dateFieldValue: {
+      color: colors.text,
+      fontSize: 16,
+      fontWeight: "700",
+      flex: 1,
+    },
+    dateFieldIcon: {
+      fontSize: 17,
+    },
     interestInput: {
       width: "100%",
       minHeight: 52,
@@ -605,6 +640,96 @@ export function createThemedStyles(colors) {
       fontSize: 13,
       fontWeight: "800",
       textAlign: "center",
+    },
+    datePickerBackdrop: {
+      flex: 1,
+      backgroundColor: colors.overlay,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 20,
+    },
+    datePickerCard: {
+      width: "100%",
+      maxWidth: 420,
+      borderRadius: 28,
+      backgroundColor: darkCard(colors),
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.08)",
+      padding: 22,
+      shadowColor: "#000000",
+      shadowOpacity: 0.28,
+      shadowRadius: 24,
+      shadowOffset: { width: 0, height: 14 },
+      elevation: 14,
+    },
+    datePickerTitle: {
+      color: "#f5f7fb",
+      fontSize: 20,
+      fontWeight: "800",
+      marginBottom: 18,
+    },
+    datePickerColumns: {
+      flexDirection: "row",
+      gap: 12,
+      marginBottom: 20,
+    },
+    dateWheelColumn: {
+      flex: 1,
+      alignItems: "center",
+      gap: 10,
+    },
+    dateWheelOption: {
+      minHeight: 48,
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 16,
+    },
+    dateWheelSelected: {
+      minHeight: 58,
+      width: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 18,
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.14)",
+      backgroundColor: "rgba(255,255,255,0.04)",
+    },
+    dateWheelTextMuted: {
+      color: "rgba(226,232,245,0.45)",
+      fontSize: 17,
+      fontWeight: "600",
+    },
+    dateWheelTextStrong: {
+      color: "#ffffff",
+      fontSize: 19,
+      fontWeight: "800",
+    },
+    datePickerActions: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      gap: 10,
+    },
+    datePickerButtonGhost: {
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      borderRadius: 14,
+    },
+    datePickerButtonGhostText: {
+      color: "rgba(233,240,255,0.82)",
+      fontSize: 15,
+      fontWeight: "700",
+    },
+    datePickerButtonPrimary: {
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      borderRadius: 14,
+      backgroundColor: colors.accent,
+    },
+    datePickerButtonPrimaryText: {
+      color: "#ffffff",
+      fontSize: 15,
+      fontWeight: "800",
     },
     interestResultCard: {
       borderRadius: 28,
@@ -655,4 +780,8 @@ export function createThemedStyles(colors) {
       flex: 1,
     },
   });
+}
+
+function darkCard(colors) {
+  return colors.status === "light" ? "#1f2330" : "#202532";
 }

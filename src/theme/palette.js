@@ -19,6 +19,10 @@ export function palette(dark) {
         glow: "rgba(118, 169, 255, 0.24)",
         hero: "rgba(12, 20, 35, 0.86)",
         glassLine: "rgba(255,255,255,0.14)",
+        resultSurface: "rgba(20, 29, 46, 0.88)",
+        resultBorder: "rgba(173, 198, 255, 0.18)",
+        resultText: "#f5f9ff",
+        resultMuted: "#a6b9d7",
       }
     : {
         status: "dark",
@@ -39,5 +43,9 @@ export function palette(dark) {
         glow: "rgba(91, 140, 255, 0.18)",
         hero: "rgba(255, 255, 255, 0.78)",
         glassLine: "rgba(255,255,255,0.54)",
+        resultSurface: "rgba(255, 255, 255, 0.78)",
+        resultBorder: "rgba(122, 156, 214, 0.24)",
+        resultText: "#142033",
+        resultMuted: "#61728f",
       };
 }

@@ -23,12 +23,12 @@ import { palette } from "./src/theme/palette";
 import { calculatePrice, formatINR } from "./src/utils/price";
 
 const DEFAULT_FORM = {
-  goldRate: 7200,
+  goldRate: 15000,
   weight: 10,
   karat: 22,
-  making: 12,
+  making: 15,
   discount: 0,
-  gst: 3,
+  gst: 0,
   makingBasis: "24k",
 };
 
@@ -160,7 +160,7 @@ export default function App() {
             />
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-              <HeroSummary goldRate={goldRate} ownerView={ownerView} result={result} styles={styles} />
+              {/*<HeroSummary goldRate={goldRate} ownerView={ownerView} result={result} styles={styles} />*/}
 
               <JewelleryForm
                 colors={colors}
@@ -203,6 +203,8 @@ export default function App() {
                   <Text style={styles.secondaryButtonText}>Share</Text>
                 </Pressable>
               </View>
+
+              {result ? <View style={styles.bottomOverlaySpacer} /> : null}
             </ScrollView>
           </>
         ) : (

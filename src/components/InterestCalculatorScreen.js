@@ -138,6 +138,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
         <InputRow
           colors={colors}
           label="Principal"
+          inline={false}
           placeholder="Enter principal amount"
           value={form.principal}
           onChangeText={(value) => handleNumericChange("principal", value)}
@@ -165,6 +166,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
         </View>
         <InputRow
           colors={colors}
+          inline={false}
           label={rateLabel}
           placeholder={form.rateMode === "rupees" ? "Monthly or fixed amount" : "Annual percentage rate"}
           value={form.rate}
@@ -212,6 +214,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
           <View style={styles.inputGrid}>
             <InputRow
               colors={colors}
+              inline
               keyboardType="default"
               label="From Date"
               placeholder="dd/MM/yyyy"
@@ -221,6 +224,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
             />
             <InputRow
               colors={colors}
+              inline
               keyboardType="default"
               label="To Date"
               placeholder="dd/MM/yyyy"
@@ -233,6 +237,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
           <View style={styles.inputGrid}>
             <InputRow
               colors={colors}
+              inline
               label="Years"
               placeholder="0"
               value={form.years}
@@ -241,6 +246,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
             />
             <InputRow
               colors={colors}
+              inline
               label="Months"
               placeholder="0"
               value={form.months}
@@ -249,6 +255,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
             />
             <InputRow
               colors={colors}
+              inline
               label="Days"
               placeholder="0"
               value={form.days}
@@ -321,9 +328,18 @@ function ToggleButton({ active, colors, label, onPress, styles }) {
   );
 }
 
-function InputRow({ colors, keyboardType = "decimal-pad", label, onChangeText, placeholder, styles, value }) {
+function InputRow({
+  colors,
+  inline = false,
+  keyboardType = "decimal-pad",
+  label,
+  onChangeText,
+  placeholder,
+  styles,
+  value,
+}) {
   return (
-    <View style={styles.interestInputGroup}>
+    <View style={inline ? styles.interestInputGroupInline : styles.interestInputGroup}>
       <Text style={[styles.fieldLabel, { color: colors.muted }]}>{label}</Text>
       <TextInput
         keyboardType={keyboardType}
@@ -337,11 +353,11 @@ function InputRow({ colors, keyboardType = "decimal-pad", label, onChangeText, p
   );
 }
 
-function ResultRow({ colors, label, styles, value }) {
+function ResultRow({ label, styles, value }) {
   return (
     <View style={styles.interestResultRow}>
-      <Text style={[styles.interestResultLabel, { color: colors.muted }]}>{label}</Text>
-      <Text style={[styles.interestResultValue, { color: colors.text }]}>{value}</Text>
+      <Text style={styles.interestResultLabel}>{label}</Text>
+      <Text style={styles.interestResultValue}>{value}</Text>
     </View>
   );
 }

@@ -4,9 +4,12 @@ import { Animated, Modal, Pressable, ScrollView, Text, TextInput, ToastAndroid, 
 import { loadLocalValue, saveLocalValue } from "../services/localStore";
 import {
   calculateInterest,
+  COMPOUND_FREQUENCY_OPTIONS,
   formatDateInput,
   getDurationFromDates,
+  getInterestRateMeta,
   getDurationFromParts,
+  INTEREST_TYPE_OPTIONS,
   parseDateInput,
 } from "../utils/interest";
 import { formatINR } from "../utils/price";
@@ -15,9 +18,8 @@ const STORE_KEY = "sonari.interest.lastCalculation";
 const MONTH_LABELS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const initialForm = {
-  interestType: "simple",
+  interestType: "monthlyFlat",
   principal: "",
-  rateMode: "rupees",
   rate: "",
   durationMode: "dates",
   fromDate: formatDateInput(new Date()),
@@ -34,8 +36,6 @@ function getDaysInMonth(year, month) {
 
 export function InterestCalculatorScreen({ colors, styles }) {
   const [form, setForm] = useState(initialForm);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState("");
   const [datePicker, setDatePicker] = useState({
     visible: false,
     field: "fromDate",
@@ -46,20 +46,19 @@ export function InterestCalculatorScreen({ colors, styles }) {
   useEffect(() => {
     const saved = loadLocalValue(STORE_KEY, null);
     if (saved?.form) setForm({ ...initialForm, ...saved.form });
-    if (saved?.result) setResult(saved.result);
   }, []);
 
+  const rateMeta = useMemo(() => getInterestRateMeta(form.interestType), [form.interestType]);
+
   useEffect(() => {
-    if (!result) return;
+    if (!calculation.result) return;
     fadeAnim.setValue(0);
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 240,
       useNativeDriver: Platform.OS !== "web",
     }).start();
-  }, [fadeAnim, result]);
-
-  const rateLabel = form.rateMode === "rupees" ? "Interest Rate (in rupees)" : "Interest Rate (%)";
+  }, [calculation.result, fadeAnim]);
 
   const duration = useMemo(() => {
     if (form.durationMode === "dates") {
@@ -73,13 +72,31 @@ export function InterestCalculatorScreen({ colors, styles }) {
     });
   }, [form.days, form.durationMode, form.fromDate, form.months, form.toDate, form.years]);
 
+  const calculation = useMemo(() => {
+    try {
+      return {
+        error: "",
+        result: calculateInterest({
+          principal: form.principal,
+          rate: form.rate,
+          interestType: form.interestType,
+          duration,
+          compoundingFrequency: form.compoundingFrequency,
+        }),
+      };
+    } catch (calculationError) {
+      return {
+        error: calculationError.message,
+        result: null,
+      };
+    }
+  }, [duration, form.compoundingFrequency, form.interestType, form.principal, form.rate]);
+
   const updateForm = (patch) => {
-    setError("");
     setForm((current) => ({ ...current, ...patch }));
   };
 
   const showError = (message) => {
-    setError(message);
     if (Platform.OS === "android") {
       ToastAndroid.show(message, ToastAndroid.SHORT);
     }
@@ -135,27 +152,19 @@ export function InterestCalculatorScreen({ colors, styles }) {
     closeDatePicker();
   };
 
-  const calculate = () => {
-    try {
-      const nextResult = calculateInterest({
-        principal: form.principal,
-        rate: form.rate,
-        rateMode: form.rateMode,
-        interestType: form.interestType,
-        duration,
-        compoundingFrequency: form.compoundingFrequency,
-      });
-      setResult(nextResult);
-      saveLocalValue(STORE_KEY, { form, result: nextResult });
-    } catch (calculationError) {
-      showError(calculationError.message);
+  const saveSnapshot = () => {
+    if (!calculation.result) {
+      showError(calculation.error || "Enter a valid interest calculation.");
+      return;
+    }
+    saveLocalValue(STORE_KEY, { form, result: calculation.result });
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Calculation saved", ToastAndroid.SHORT);
     }
   };
 
   const clear = () => {
     setForm(initialForm);
-    setResult(null);
-    setError("");
     saveLocalValue(STORE_KEY, null);
   };
 
@@ -164,26 +173,27 @@ export function InterestCalculatorScreen({ colors, styles }) {
       <View style={styles.interestHeader}>
         <View>
           <Text style={styles.interestTitle}>Interest Calculator</Text>
-          <Text style={styles.interestSubtitle}>Simple and compound returns for daily shop use</Text>
+          <Text style={styles.interestSubtitle}>Monthly flat, simple, compound, and daily lending calculations for Indian market use.</Text>
         </View>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Interest Type</Text>
-        <RadioRow
-          colors={colors}
-          options={[
-            { label: "Simple Interest", value: "simple" },
-            { label: "Compound Interest", value: "compound" },
-          ]}
-          value={form.interestType}
-          onChange={(interestType) => updateForm({ interestType })}
-          styles={styles}
-        />
-      </View>
+        <Text style={styles.cardTitle}>Lending Setup</Text>
+        <Text style={styles.fintechSectionLabel}>Interest Mode</Text>
+        <View style={styles.interestTypeGrid}>
+          {INTEREST_TYPE_OPTIONS.map((option) => (
+            <ToggleButton
+              key={option.value}
+              active={form.interestType === option.value}
+              colors={colors}
+              label={option.label}
+              onPress={() => updateForm({ interestType: option.value })}
+              styles={styles}
+            />
+          ))}
+        </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Principal Amount</Text>
+        <Text style={styles.fintechSectionLabel}>Principal Amount</Text>
         <InputRow
           colors={colors}
           label="Principal"
@@ -197,47 +207,30 @@ export function InterestCalculatorScreen({ colors, styles }) {
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Interest Rate</Text>
-        <View style={styles.segmentRow}>
-          <ToggleButton
-            active={form.rateMode === "rupees"}
-            colors={colors}
-            label="Rupees"
-            onPress={() => updateForm({ rateMode: "rupees" })}
-            styles={styles}
-          />
-          <ToggleButton
-            active={form.rateMode === "percentage"}
-            colors={colors}
-            label="Percentage"
-            onPress={() => updateForm({ rateMode: "percentage" })}
-            styles={styles}
-          />
+        <View style={styles.rateMetaCard}>
+          <Text style={styles.rateMetaBadge}>{rateMeta.badge}</Text>
+          <Text style={styles.rateMetaText}>{rateMeta.helper}</Text>
         </View>
         <InputRow
           colors={colors}
           inline={false}
-          label={rateLabel}
-          placeholder={form.rateMode === "rupees" ? "Monthly or fixed amount" : "Annual percentage rate"}
+          label={rateMeta.title}
+          placeholder="Enter interest value"
           value={form.rate}
           onChangeText={(value) => handleNumericChange("rate", value)}
           styles={styles}
         />
-        {form.interestType === "compound" && form.rateMode === "percentage" ? (
+        {form.interestType === "compound" ? (
           <View style={styles.compoundBlock}>
             <Text style={styles.compoundLabel}>Compounding frequency</Text>
             <View style={styles.segmentRow}>
-              {[
-                ["Monthly", "monthly"],
-                ["Quarterly", "quarterly"],
-                ["Half-Yearly", "halfYearly"],
-                ["Yearly", "yearly"],
-              ].map(([label, value]) => (
+              {COMPOUND_FREQUENCY_OPTIONS.map((option) => (
                 <ToggleButton
-                  key={value}
-                  active={form.compoundingFrequency === value}
+                  key={option.value}
+                  active={form.compoundingFrequency === option.value}
                   colors={colors}
-                  label={label}
-                  onPress={() => updateForm({ compoundingFrequency: value })}
+                  label={option.label}
+                  onPress={() => updateForm({ compoundingFrequency: option.value })}
                   styles={styles}
                 />
               ))}
@@ -307,28 +300,44 @@ export function InterestCalculatorScreen({ colors, styles }) {
         )}
       </View>
 
-      {error ? <Text style={styles.interestError}>{error}</Text> : null}
+      {calculation.error ? <Text style={styles.interestError}>{calculation.error}</Text> : null}
 
       <View style={styles.actionRow}>
-        <Pressable style={styles.primaryButton} onPress={calculate}>
-          <Text style={styles.primaryButtonText}>Calculate</Text>
+        <Pressable style={styles.primaryButton} onPress={saveSnapshot}>
+          <Text style={styles.primaryButtonText}>Save Snapshot</Text>
         </Pressable>
         <Pressable style={styles.secondaryButton} onPress={clear}>
           <Text style={styles.secondaryButtonText}>Clear</Text>
         </Pressable>
       </View>
 
-      {result ? (
+      {calculation.result ? (
         <Animated.View style={[styles.interestResultCard, { opacity: fadeAnim }]}>
           <Text style={styles.resultEyebrow}>Result</Text>
-          <Text style={styles.resultAmount}>{formatINR(result.totalAmount)}</Text>
-          <ResultRow label="Principal Amount" value={formatINR(result.principalAmount)} colors={colors} styles={styles} />
-          <ResultRow label="Interest Earned" value={formatINR(result.interestEarned)} colors={colors} styles={styles} />
-          <ResultRow label="Total Duration" value={result.durationLabel} colors={colors} styles={styles} />
+          <Text style={styles.resultAmount}>{formatINR(calculation.result.grandTotal)}</Text>
+          <Text style={styles.resultHelper}>
+            {calculation.result.interestModeLabel} • {calculation.result.totalMonthsDisplay} months
+          </Text>
+          <View style={styles.resultHighlightRow}>
+            <ResultMetric
+              label="Monthly Interest"
+              value={formatINR(calculation.result.monthlyInterest)}
+              styles={styles}
+            />
+            <ResultMetric
+              label="Total Interest"
+              value={formatINR(calculation.result.totalInterest)}
+              styles={styles}
+            />
+          </View>
+          <ResultRow label="Principal Amount" value={formatINR(calculation.result.principalAmount)} styles={styles} />
+          <ResultRow label="Monthly Interest" value={formatINR(calculation.result.monthlyInterest)} styles={styles} />
+          <ResultRow label="Interest Amount" value={formatINR(calculation.result.interestAmount)} styles={styles} />
+          <ResultRow label="Total Duration" value={calculation.result.totalDurationLabel} styles={styles} />
+          <ResultRow label="Total Interest" value={formatINR(calculation.result.totalInterest)} styles={styles} />
           <ResultRow
-            label="Interest Type"
-            value={result.interestType === "simple" ? "Simple Interest" : "Compound Interest"}
-            colors={colors}
+            label="Grand Total"
+            value={formatINR(calculation.result.grandTotal)}
             styles={styles}
           />
         </Animated.View>
@@ -456,6 +465,15 @@ function ToggleButton({ active, colors, label, onPress, styles }) {
     >
       <Text style={[styles.interestToggleText, { color: active ? "#ffffff" : colors.muted }]}>{label}</Text>
     </Pressable>
+  );
+}
+
+function ResultMetric({ label, styles, value }) {
+  return (
+    <View style={styles.resultHighlightCard}>
+      <Text style={styles.resultHighlightLabel}>{label}</Text>
+      <Text style={styles.resultHighlightValue}>{value}</Text>
+    </View>
   );
 }
 

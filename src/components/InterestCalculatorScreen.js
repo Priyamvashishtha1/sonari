@@ -50,16 +50,6 @@ export function InterestCalculatorScreen({ colors, styles }) {
 
   const rateMeta = useMemo(() => getInterestRateMeta(form.interestType), [form.interestType]);
 
-  useEffect(() => {
-    if (!calculation.result) return;
-    fadeAnim.setValue(0);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 240,
-      useNativeDriver: Platform.OS !== "web",
-    }).start();
-  }, [calculation.result, fadeAnim]);
-
   const duration = useMemo(() => {
     if (form.durationMode === "dates") {
       return getDurationFromDates(form.fromDate, form.toDate);
@@ -91,6 +81,16 @@ export function InterestCalculatorScreen({ colors, styles }) {
       };
     }
   }, [duration, form.compoundingFrequency, form.interestType, form.principal, form.rate]);
+
+  useEffect(() => {
+    if (!calculation.result) return;
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 240,
+      useNativeDriver: Platform.OS !== "web",
+    }).start();
+  }, [calculation.result, fadeAnim]);
 
   const updateForm = (patch) => {
     setForm((current) => ({ ...current, ...patch }));

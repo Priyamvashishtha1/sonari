@@ -22,6 +22,7 @@ const initialForm = {
   principal: "",
   rate: "",
   durationMode: "dates",
+  exactDayBased: false,
   fromDate: formatDateInput(new Date()),
   toDate: formatDateInput(new Date()),
   years: "",
@@ -72,6 +73,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
           interestType: form.interestType,
           duration,
           compoundingFrequency: form.compoundingFrequency,
+          exactDayBased: form.exactDayBased,
         }),
       };
     } catch (calculationError) {
@@ -104,6 +106,12 @@ export function InterestCalculatorScreen({ colors, styles }) {
 
   const handleNumericChange = (key, value) => {
     if (/^\d*\.?\d*$/.test(value)) {
+      updateForm({ [key]: value });
+    }
+  };
+
+  const handleWholeNumberChange = (key, value) => {
+    if (/^\d*$/.test(value)) {
       updateForm({ [key]: value });
     }
   };
@@ -275,7 +283,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
               label="Years"
               placeholder="0"
               value={form.years}
-              onChangeText={(value) => handleNumericChange("years", value)}
+              onChangeText={(value) => handleWholeNumberChange("years", value)}
               styles={styles}
             />
             <InputRow
@@ -284,7 +292,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
               label="Months"
               placeholder="0"
               value={form.months}
-              onChangeText={(value) => handleNumericChange("months", value)}
+              onChangeText={(value) => handleWholeNumberChange("months", value)}
               styles={styles}
             />
             <InputRow
@@ -293,9 +301,27 @@ export function InterestCalculatorScreen({ colors, styles }) {
               label="Days"
               placeholder="0"
               value={form.days}
-              onChangeText={(value) => handleNumericChange("days", value)}
+              onChangeText={(value) => handleWholeNumberChange("days", value)}
               styles={styles}
             />
+          </View>
+        )}
+
+        {form.interestType !== "dailyInterest" ? (
+          <ExactModeToggle
+            enabled={form.exactDayBased}
+            helper={
+              form.exactDayBased
+                ? "Exact day-based mode prorates using the actual day span. Traditional Indian month counting is temporarily off."
+                : "Traditional Indian month counting is on. Full calendar months are counted and partial month fractions are ignored."
+            }
+            onPress={() => updateForm({ exactDayBased: !form.exactDayBased })}
+            styles={styles}
+          />
+        ) : (
+          <View style={styles.exactModeCard}>
+            <Text style={styles.exactModeLabel}>Exact Day-Based Calculation</Text>
+            <Text style={styles.exactModeHelper}>Daily Interest always uses exact day counting automatically.</Text>
           </View>
         )}
       </View>
@@ -316,12 +342,12 @@ export function InterestCalculatorScreen({ colors, styles }) {
           <Text style={styles.resultEyebrow}>Result</Text>
           <Text style={styles.resultAmount}>{formatINR(calculation.result.grandTotal)}</Text>
           <Text style={styles.resultHelper}>
-            {calculation.result.interestModeLabel} • {calculation.result.totalMonthsDisplay} months
+            {calculation.result.interestModeLabel} • {calculation.result.calculationBasisLabel}
           </Text>
           <View style={styles.resultHighlightRow}>
             <ResultMetric
-              label="Monthly Interest"
-              value={formatINR(calculation.result.monthlyInterest)}
+              label={calculation.result.periodicInterestLabel}
+              value={formatINR(calculation.result.periodicInterest)}
               styles={styles}
             />
             <ResultMetric
@@ -331,7 +357,7 @@ export function InterestCalculatorScreen({ colors, styles }) {
             />
           </View>
           <ResultRow label="Principal Amount" value={formatINR(calculation.result.principalAmount)} styles={styles} />
-          <ResultRow label="Monthly Interest" value={formatINR(calculation.result.monthlyInterest)} styles={styles} />
+          <ResultRow label={calculation.result.periodicInterestLabel} value={formatINR(calculation.result.periodicInterest)} styles={styles} />
           <ResultRow label="Interest Amount" value={formatINR(calculation.result.interestAmount)} styles={styles} />
           <ResultRow label="Total Duration" value={calculation.result.totalDurationLabel} styles={styles} />
           <ResultRow label="Total Interest" value={formatINR(calculation.result.totalInterest)} styles={styles} />
@@ -464,6 +490,22 @@ function ToggleButton({ active, colors, label, onPress, styles }) {
       ]}
     >
       <Text style={[styles.interestToggleText, { color: active ? "#ffffff" : colors.muted }]}>{label}</Text>
+    </Pressable>
+  );
+}
+
+function ExactModeToggle({ enabled, helper, onPress, styles }) {
+  return (
+    <Pressable onPress={onPress} style={[styles.exactModeCard, enabled ? styles.exactModeCardActive : null]}>
+      <View style={styles.exactModeRow}>
+        <View style={[styles.exactModeCheckbox, enabled ? styles.exactModeCheckboxActive : null]}>
+          {enabled ? <Text style={styles.exactModeCheckboxTick}>✓</Text> : null}
+        </View>
+        <View style={styles.exactModeTextWrap}>
+          <Text style={styles.exactModeLabel}>Exact Day-Based Calculation</Text>
+          <Text style={styles.exactModeHelper}>{helper}</Text>
+        </View>
+      </View>
     </Pressable>
   );
 }
